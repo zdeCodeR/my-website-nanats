@@ -54,6 +54,9 @@
       <button class="btn-primary" onclick="showSection('shop')">
         <i class="fas fa-shopping-bag"></i> Product 
       </button>
+      <button class="btn-primary" onclick="showSection('skills')">
+        <i class="fas fa-code"></i> My Skills
+      </button>
       <button class="btn-primary" onclick="showSection('payment')">
         <i class="fas fa-credit-card"></i> Payments
       </button>
@@ -148,6 +151,44 @@
     </button>
   </div>
 
+  <div class="main-content" id="skills" style="display:none;">
+    <div class="section-title">
+      <i class="fas fa-code"></i>
+      My Skills
+    </div>
+
+    <div class="skills-container">
+      <div class="skill-item">
+        <i class="fab fa-html5" style="color: #e34f26;"></i>
+        <span>HTML</span>
+      </div>
+      <div class="skill-item">
+        <i class="fab fa-python" style="color: #3776ab;"></i>
+        <span>Python</span>
+      </div>
+      <div class="skill-item">
+        <i class="fab fa-js-square" style="color: #f7df1e;"></i>
+        <span>JavaScript</span>
+      </div>
+      <div class="skill-item">
+        <i class="fab fa-php" style="color: #777bb4;"></i>
+        <span>PHP</span>
+      </div>
+      <div class="skill-item">
+        <i class="fab fa-css3-alt" style="color: #1572b6;"></i>
+        <span>CSS</span>
+      </div>
+      <div class="skill-item">
+        <i class="fab fa-git-alt" style="color: #f05032;"></i>
+        <span>Git</span>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  </div>
+
   <div class="main-content" id="payment" style="display:none;">
     <div class="section-title">
       <i class="fas fa-credit-card"></i>
@@ -191,4 +232,4 @@
 
   <script src="script.js"></script>
 </body>
-      </html>
+    </html>

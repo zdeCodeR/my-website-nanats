@@ -1,4 +1,244 @@
-     <span class="status-badge status-available">Advanced</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My - Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <i class="fas fa-sun" id="themeIcon"></i>
+  </div>
+
+  <div class="loading-screen" id="loading">
+    <h1> Let's Started</h1>
+    <div class="loading-spinner"></div>
+    <div class="loading-dots">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+  </div>
+
+  <div class="container" id="intro">
+    <img src="image.jpg" alt="" class="profile-img">
+    <h1></h1>
+    <div class="typing-text" id="introTyping"></div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="goToMain()">
+        <i class="fas fa-rocket"></i> Start Now
+      </button>
+    </div>
+  </div>
+
+  <div class="main-content" id="main">
+    <img src="image.jpg" alt="" class="profile-img">
+    <h1>zam-x</h1>
+    <div class="typing-text" id="mainTyping"></div>
+    
+    <div class="social-links">
+      <a href="https://t.me/scorpiozzz" target="_blank">
+        <i class="fab fa-telegram"></i>
+        <span>Channels</span>
+      </a>
+             
+      <a href="https://t.me/nanastfx" target="_blank">
+        <i class="fab fa-telegram"></i>
+        <span>Contact</span>
+      </a>
+    </div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="showSection('shop')">
+        <i class="fas fa-shopping-bag"></i> Product 
+      </button>
+      <button class="btn-primary" onclick="showSection('skills')">
+        <i class="fas fa-code"></i> My Skills
+      </button>
+      <button class="btn-primary" onclick="showSection('payment')">
+        <i class="fas fa-credit-card"></i> Payments
+      </button>
+      <button class="btn-primary" onclick="showSection('about')">
+        <i class="fas fa-user"></i> About Me
+      </button>
+    </div>
+    
+    <div class="footer-text">
+      <p></p>
+      <p style="margin-top: 1rem; font-size: 0.75rem;">© zam-x - nanatstifux</p>
+    </div>
+  </div>
+
+  <div class="main-content" id="shop" style="display:none;">
+    <div class="section-title">
+      <i class="fas fa-store"></i>
+      Catalog Product and Service
+    </div>
+
+    <div class="product-card">
+      <div class="product-header">     
+        <div class="product-info">
+          <h3><i class="fas fa-globe"></i> Tools Auto Exploit</h3>
+          <span class="product-category"></span>
+        </div>
+      </div>
+      <p class="product-description">
+        Tools Auto Xploit Cocok Haker Heket Bay
+      </p>
+      <div class="product-footer">
+        <span class="product-price">Starting from 30.000 IDR</span>
+        <a href="https://t.me/nanastfx?text=Hai%20aku%20mau%20pesan%20tools%20auto%20exploit%20nya%20kak" target="_blank" class="btn-primary">
+          <i class="fas fa-shopping-cart"></i> Order Now
+        </a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-header">     
+        <div class="product-info">
+          <h3><i class="fas fa-globe"></i> Akses Admin Website</h3>
+          <span class="product-category"></span>
+        </div>
+      </div>
+      <p class="product-description">
+        Tersedia Akses Admin go.id, .SCH.ID & .GOV Untuk Defacer
+      </p>
+      <div class="product-footer">
+        <span class="product-price">Starting from 100.000 IDR Per 1 File (1 file berisi 100.000 baris)</span>
+        <a href="https://t.me/nanastfx?text=Hai%20kak%20aku%20mau%20beli%20logs%20admin%20nak%20main%20heker%20heker%20an" target="_blank" class="btn-primary">
+          <i class="fas fa-shopping-cart"></i> Order Now
+        </a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-header">     
+        <div class="product-info">
+          <h3><i class="fas fa-globe"></i> Dorking Sakti</h3>
+          <span class="product-category"></span>
+        </div>
+      </div>
+      <p class="product-description">
+        Dorking Sakti Yang Berisi Berbagai Dorking (CCTV & SQLI & XSS & JOOMLA & LFI & LARAVEL & WORDPRESS) BONUS PAYLOAD XSS Cocok Juga Untuk Defacer.
+      </p>
+      <div class="product-footer">
+        <span class="product-price">Starting from 50.000 IDR per 1 file</span>
+        <a href="https://t.me/nanastfx?text=Hai%20aku%20mau%20drokink%20sakti%20nya%20dong%20kak😜" target="_blank" class="btn-primary">
+          <i class="fas fa-shopping-cart"></i> Order Now
+        </a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-header">     
+        <div class="product-info">
+          <h3><i class="fas fa-globe"></i> Tools Create Akun Facebook</h3>
+          <span class="product-category"></span>
+        </div>
+      </div>
+      <p class="product-description">
+        Buat Akun FB Otomatis Dengan Jumlah Yang Banyak 
+      </p>
+      <div class="product-footer">
+        <span class="product-price">Starting from 20.000 IDR</span>
+        <a href="https://t.me/nanastfx?text=Hai%20aku%20mau%20beli%20tools%20create%20akun%20fesnuknya%20dong" target="_blank" class="btn-primary">
+          <i class="fas fa-shopping-cart"></i> Order Now
+        </a>
+      </div>
+    </div>
+     
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  </div>
+
+  <div class="main-content" id="skills" style="display:none;">
+    <div class="section-title">
+      <i class="fas fa-code"></i>
+      My Skills
+    </div>
+
+    <div class="skills-container">
+      <div class="skill-method">
+        <i class="fab fa-html5 skill-icon" style="color: #e34f26;"></i>
+        <div class="skill-info">
+          <h4><i class="fas fa-code"></i> HTML5</h4>
+          <p>Web Development & Semantic Markup</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-available">Expert</span>
+          <button class="btn-primary" onclick="copySkill('HTML5')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-copy"></i> Copy Skill
+          </button>
+        </div>
+      </div>
+
+      <div class="skill-method">
+        <i class="fab fa-css3-alt skill-icon" style="color: #1572b6;"></i>
+        <div class="skill-info">
+          <h4><i class="fas fa-palette"></i> CSS3</h4>
+          <p>Styling, Layouts & Responsive Design</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-available">Expert</span>
+          <button class="btn-primary" onclick="copySkill('CSS3')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-copy"></i> Copy Skill
+          </button>
+        </div>
+      </div>
+
+      <div class="skill-method">
+        <i class="fab fa-js-square skill-icon" style="color: #f7df1e;"></i>
+        <div class="skill-info">
+          <h4><i class="fas fa-bolt"></i> JavaScript</h4>
+          <p>Frontend Development & Interactive Features</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-available">Advanced</span>
+          <button class="btn-primary" onclick="copySkill('JavaScript')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-copy"></i> Copy Skill
+          </button>
+        </div>
+      </div>
+
+      <div class="skill-method">
+        <i class="fab fa-python skill-icon" style="color: #3776ab;"></i>
+        <div class="skill-info">
+          <h4><i class="fas fa-server"></i> Python</h4>
+          <p>Backend Development & Data Analysis</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-available">Advanced</span>
+          <button class="btn-primary" onclick="copySkill('Python')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-copy"></i> Copy Skill
+          </button>
+        </div>
+      </div>
+
+      <div class="skill-method">
+        <i class="fab fa-php skill-icon" style="color: #777bb4;"></i>
+        <div class="skill-info">
+          <h4><i class="fas fa-database"></i> PHP</h4>
+          <p>Server-side Scripting & Web Applications</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-available">Intermediate</span>
+          <button class="btn-primary" onclick="copySkill('PHP')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-copy"></i> Copy Skill
+          </button>
+        </div>
+      </div>
+      
+      <div class="skill-method">
+        <i class="fab fa-git-alt skill-icon" style="color: #f05032;"></i>
+        <div class="skill-info">
+          <h4><i class="fas fa-code-branch"></i> Git</h4>
+          <p>Version Control & Collaboration</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-available">Advanced</span>
           <button class="btn-primary" onclick="copySkill('Git')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
             <i class="fas fa-copy"></i> Copy Skill
           </button>
@@ -199,4 +439,4 @@
 
   <script src="script.js"></script>
 </body>
-  </html>
+           </html>

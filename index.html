@@ -151,43 +151,138 @@
     </button>
   </div>
 
-  <div class="main-content" id="skills" style="display:none;">
-    <div class="section-title">
-      <i class="fas fa-code"></i>
-      My Skills
-    </div>
-
-    <div class="skills-container">
-      <div class="skill-item">
-        <i class="fab fa-html5" style="color: #e34f26;"></i>
-        <span>HTML</span>
-      </div>
-      <div class="skill-item">
-        <i class="fab fa-python" style="color: #3776ab;"></i>
-        <span>Python</span>
-      </div>
-      <div class="skill-item">
-        <i class="fab fa-js-square" style="color: #f7df1e;"></i>
-        <span>JavaScript</span>
-      </div>
-      <div class="skill-item">
-        <i class="fab fa-php" style="color: #777bb4;"></i>
-        <span>PHP</span>
-      </div>
-      <div class="skill-item">
-        <i class="fab fa-css3-alt" style="color: #1572b6;"></i>
-        <span>CSS</span>
-      </div>
-      <div class="skill-item">
-        <i class="fab fa-git-alt" style="color: #f05032;"></i>
-        <span>Git</span>
-      </div>
-    </div>
-
-    <button class="btn-secondary" onclick="backToMain()">
-      <i class="fas fa-arrow-left"></i> Back to Main
-    </button>
+<div class="main-content" id="skills" style="display:none;">
+  <div class="section-title">
+    <i class="fas fa-code"></i>
+    My Skills
   </div>
+
+  <div class="skills-container">
+    <!-- HTML -->
+    <div class="skill-method">
+      <i class="fab fa-html5 skill-icon" style="color: #e34f26;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-code"></i> HTML5</h4>
+        <p>Web Development & Semantic Markup</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Expert</span>
+        <button class="btn-primary" onclick="copySkill('HTML5')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- CSS -->
+    <div class="skill-method">
+      <i class="fab fa-css3-alt skill-icon" style="color: #1572b6;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-palette"></i> CSS3</h4>
+        <p>Styling, Layouts & Responsive Design</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Expert</span>
+        <button class="btn-primary" onclick="copySkill('CSS3')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <div class="skill-method">
+      <i class="fab fa-js-square skill-icon" style="color: #f7df1e;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-bolt"></i> JavaScript</h4>
+        <p>Frontend Development & Interactive Features</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Advanced</span>
+        <button class="btn-primary" onclick="copySkill('JavaScript')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- Python -->
+    <div class="skill-method">
+      <i class="fab fa-python skill-icon" style="color: #3776ab;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-server"></i> Python</h4>
+        <p>Backend Development & Data Analysis</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Advanced</span>
+        <button class="btn-primary" onclick="copySkill('Python')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- PHP -->
+    <div class="skill-method">
+      <i class="fab fa-php skill-icon" style="color: #777bb4;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-database"></i> PHP</h4>
+        <p>Server-side Scripting & Web Applications</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Intermediate</span>
+        <button class="btn-primary" onclick="copySkill('PHP')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- Git -->
+    <div class="skill-method">
+      <i class="fab fa-git-alt skill-icon" style="color: #f05032;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-code-branch"></i> Git</h4>
+        <p>Version Control & Collaboration</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Advanced</span>
+        <button class="btn-primary" onclick="copySkill('Git')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- React -->
+    <div class="skill-method">
+      <i class="fab fa-react skill-icon" style="color: #61dafb;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-atom"></i> React</h4>
+        <p>Frontend Framework & Component-based UI</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Intermediate</span>
+        <button class="btn-primary" onclick="copySkill('React')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+
+    <!-- Node.js -->
+    <div class="skill-method">
+      <i class="fab fa-node-js skill-icon" style="color: #339933;"></i>
+      <div class="skill-info">
+        <h4><i class="fas fa-network-wired"></i> Node.js</h4>
+        <p>Backend Runtime & API Development</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Intermediate</span>
+        <button class="btn-primary" onclick="copySkill('Node.js')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Skill
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-secondary" onclick="backToMain()">
+    <i class="fas fa-arrow-left"></i> Back to Main
+  </button>
+</div>
 
   <div class="main-content" id="payment" style="display:none;">
     <div class="section-title">
@@ -232,4 +327,4 @@
 
   <script src="script.js"></script>
 </body>
-    </html>
+          </html>

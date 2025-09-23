@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My - Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <i class="fas fa-sun" id="themeIcon"></i>
+  </div>
+
+  <div class="loading-screen" id="loading">
+    <h1> Let's Started</h1>
+    <div class="loading-spinner"></div>
+    <div class="loading-dots">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+  </div>
+
+  <div class="container" id="intro">
+    <img src="image.jpg" alt="" class="profile-img">
+    <h1></h1>
+    <div class="typing-text" id="introTyping"></div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="goToMain()">
+        <i class="fas fa-rocket"></i> Start Now
+      </button>
+    </div>
+  </div>
+
+  <div class="main-content" id="main">
+    <img src="image.jpg" alt="" class="profile-img">
+    <h1>zam-x</h1>
+    <div class="typing-text" id="mainTyping"></div>
+    
+    <div class="social-links">
+      <a href="https://t.me/Vrtect" target="_blank">
+        <i class="fab fa-telegram"></i>
+        <span>Channels</span>
+      </a>
+    
+             
+      <a href="https://t.me/nanastfx" target="_blank">
+        <i class="fab fa-telegram"></i>
+        <span>Contact</span>
+      </a>
+    </div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="showSection('shop')">
+        <i class="fas fa-shopping-bag"></i> Product 
+      </button>
+      <button class="btn-primary" onclick="showSection('payment')">
+        <i class="fas fa-credit-card"></i> Payments
+      </button>
+    </div>
+    
+    <div class="footer-text">
+      <p></p>
+      <p style="margin-top: 1rem; font-size: 0.75rem;">© copyright - nanatstifux</p>
+    </div>
+  </div>
+
+  <div class="main-content" id="shop" style="display:none;">
+    <div class="section-title">
+      <i class="fas fa-store"></i>
+      Catalog Product and Service
+    </div>
+    
+<div class="product-grid">
+  <div class="product-card">
+    <div class="product-header">
+      <img src="produk1.jpg" alt="Noktel Telegram" class="product-img">
+      <div class="product-info">
+        <h3>Nomer Kosong</h3>
+        <span class="product-category">Akun Telegram</span>
+      </div>
+    </div>
+    <p class="product-description">
+      Akun Telegram Noktel ID 1-6 siap pakai, cocok untuk kebutuhan verifikasi, spam tools, atau aktivitas multi akun.
+    </p>
+    <div class="product-footer">
+      <span class="product-price">Starting From 15.000/ IDR</span>
+      <a href="https://t.me/nanastfx" target="_blank" class="btn-primary">
+        <i class="fas fa-shopping-cart"></i> Order Now
+      </a>
+    </div>
+  </div>
+  <div class="product-card">
+    <div class="product-header">
+      <div class="product-info">
+        <h3>Panel Unli - Admin Panel</h3>
+        <span class="product-category">Pterodactyl</span>
+      </div>
+    </div>
+    <p class="product-description">
+      Panel unlimited berbasis Pterodactyl untuk deploy bot, API, script, dan kebutuhan hosting lainnya — termasuk akses Admin.
+    </p>
+    <div class="product-footer">
+      <span class="product-price">Starting from 5.000/ IDR</span>
+      <a href="https://t.me/nanastfx" target="_blank" class="btn-primary">
+        <i class="fas fa-shopping-cart"></i> Order Now
+      </a>
+    </div>
+  </div>
+  <div class="product-card">
+    <div class="product-header">
+      <div class="product-info">
+        <h3></i>Function</h3>
+        <span class="product-category">Function Bug</span>
+      </div>
+    </div>
+    <p class="product-description">
+      Koleksi function crash, bug, bypass, dan exploit untuk Telegram, siap digunakan dalam project atau pengujian sistem.
+    </p>
+    <div class="product-footer">
+      <span class="product-price">Starting from 50.000/ IDR</span>
+      <a href="https://t.me/nanastfx" target="_blank" class="btn-primary">
+        <i class="fas fa-shopping-cart"></i> Order Now
+      </a>
+    </div>
+  </div>
+  <div class="product-card">
+    <div class="product-header">
+      <div class="product-info">
+        <h3></i>Fix Script</h3>
+        <span class="product-category">Service</span>
+      </div>
+    </div>
+    <p class="product-description">
+      Layanan perbaikan script error, debugging logic, dan optimalisasi kinerja pada bot atau automation script WhatsApp.
+    </p>
+    <div class="product-footer">
+      <span class="product-price">Starting from 30.000/ IDR</span>
+      <a href="https://t.me/nanastfx" target="_blank" class="btn-primary">
+        <i class="fas fa-shopping-cart"></i> Order Now
+      </a>
+    </div>
+  </div>
+  <div class="product-card">
+    <div class="product-header">     
+      <div class="product-info">
+        <h3><i class="fas fa-globe"></i>Create Website</h3>
+        <span class="product-category">Web Development</span>
+      </div>
+    </div>
+    <p class="product-description">
+      Jasa pembuatan website profesional: landing page, toko online, personal branding, dan lainnya — responsive & SEO-friendly.
+    </p>
+    <div class="product-footer">
+      <span class="product-price">Starting from 70.000/ IDR</span>
+      <a href="https://t.me/nanastfx" target="_blank" class="btn-primary">
+        <i class="fas fa-shopping-cart"></i> Order Now
+      </a>
+    </div>
+  </div>
+</div>
+    
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  </div>
+
+  <div class="main-content" id="payment" style="display:none;">
+    <div class="section-title">
+      <i class="fas fa-credit-card"></i>
+      Payment Methods
+    </div>
+    
+   <div class="payment-method">
+      <img src="dana.jpg" class="payment-img" alt="Dana">
+      <div class="payment-info">
+        <h4><i class="fas fa-wallet"></i> Dana Digital Wallet</h4>
+        <p>A/N a</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Available</span>
+        <button class="btn-primary" onclick="copyNumber('082124169150')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Number
+        </button>
+      </div>
+    </div>
+
+    <div class="payment-method">
+      <img src="gopay.jpg" class="payment-img" alt="GoPay">
+      <div class="payment-info">
+   <div class="payment-info">
+        <h4><i class="fas fa-wallet"></i> GoPay integration</h4>
+        <p>Fast and secure payment via GoPay payment</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="status-badge status-available">Available</span>
+        <button class="btn-primary" onclick="copyNumber('083186967977')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-copy"></i> Copy Number
+        </button>
+      </div>
+    </div> 
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  </div>
+
+  <audio id="audio" src="audio.mp3" preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

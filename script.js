@@ -111,6 +111,114 @@ function showNotification(message) {
   }, 3000);
 }
 
+// ===== 🔍 NIK PARSER FUNCTIONS =====
+function showNIKParser() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const nikParserHTML = `
+    <div class="section-title">
+      <i class="fas fa-id-card"></i>
+      NIK Parser Tools
+    </div>
+    
+    <div class="nik-container">
+      <div class="nik-input-section">
+        <label for="nikInput" class="nik-label">Enter NIK Number</label>
+        <input type="text" id="nikInput" placeholder="Enter 16-digit NIK" maxlength="16" class="nik-input">
+        <button onclick="parseNIK()" class="btn-primary nik-button">
+          <i class="fas fa-search"></i> Parse NIK
+        </button>
+      </div>
+      
+      <div class="nik-result-section">
+        <div class="nik-result-header">
+          <strong>Parsing Result</strong>
+          <button onclick="copyNIKResult()" class="btn-secondary">
+            <i class="fas fa-copy"></i> Copy Result
+          </button>
+        </div>
+        <div id="nikResult" class="nik-result"></div>
+      </div>
+    </div>
+    
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const nikSection = document.getElementById('nikparser');
+  nikSection.innerHTML = nikParserHTML;
+  nikSection.style.display = 'block';
+}
+
+function parseNIK() {
+  const nik = document.getElementById('nikInput').value;
+  const resultDiv = document.getElementById('nikResult');
+  
+  if (!nik) {
+    resultDiv.innerHTML = '<div class="nik-error">Please enter a NIK number</div>';
+    return;
+  }
+  
+  if (nik.length !== 16) {
+    resultDiv.innerHTML = '<div class="nik-error">NIK must be 16 digits</div>';
+    return;
+  }
+  
+  // Simple NIK parsing logic (bisa diganti dengan library yang lebih advanced)
+  try {
+    const provinceCode = nik.substring(0, 2);
+    const regencyCode = nik.substring(2, 4);
+    const districtCode = nik.substring(4, 6);
+    const birthDate = nik.substring(6, 12);
+    const uniqueCode = nik.substring(12, 16);
+    
+    // Parse birth date
+    const day = parseInt(birthDate.substring(0, 2));
+    const month = parseInt(birthDate.substring(2, 4));
+    const year = parseInt(birthDate.substring(4, 6));
+    
+    const fullYear = year + (year < 25 ? 2000 : 1900);
+    const gender = day > 40 ? 'Female' : 'Male';
+    const actualDay = day > 40 ? day - 40 : day;
+    
+    const result = {
+      "NIK": nik,
+      "Province Code": provinceCode,
+      "Regency Code": regencyCode,
+      "District Code": districtCode,
+      "Birth Info": {
+        "Date": `${actualDay.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${fullYear}`,
+        "Day": actualDay,
+        "Month": month,
+        "Year": fullYear,
+        "Gender": gender
+      },
+      "Unique Code": uniqueCode
+    };
+    
+    resultDiv.innerHTML = `<pre class="nik-success">${JSON.stringify(result, null, 2)}</pre>`;
+    resultDiv.classList.add('fade-in');
+    
+  } catch (error) {
+    resultDiv.innerHTML = '<div class="nik-error">Error parsing NIK. Please check the format.</div>';
+  }
+}
+
+function copyNIKResult() {
+  const resultText = document.getElementById('nikResult').innerText;
+  if (!resultText || resultText.includes('Please enter') || resultText.includes('Error')) {
+    showNotification('<i class="fas fa-exclamation-triangle"></i> No valid result to copy');
+    return;
+  }
+  
+  navigator.clipboard.writeText(resultText).then(() => {
+    showNotification('<i class="fas fa-check"></i> NIK result copied to clipboard!');
+  }).catch(err => {
+    showNotification('<i class="fas fa-times"></i> Failed to copy result');
+  });
+    }
+
 // ===== KALKULATOR =====
 function showCalculator() {
   document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');

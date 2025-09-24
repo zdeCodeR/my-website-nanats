@@ -219,6 +219,295 @@ function copyNIKResult() {
   });
     }
 
+// ===== 🔐 PASSWORD GENERATOR =====
+function showPasswordGenerator() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const passwordHTML = `
+    <div class="section-title">
+      <i class="fas fa-key"></i>
+      Password Generator
+    </div>
+    
+    <div class="tool-container">
+      <div class="password-settings">
+        <div class="setting-group">
+          <label class="setting-label">Password Length</label>
+          <input type="range" id="lengthSlider" min="8" max="32" value="12" class="slider">
+          <span id="lengthValue" class="value-display">12</span>
+        </div>
+        
+        <div class="setting-group">
+          <label class="setting-label">Include Uppercase</label>
+          <input type="checkbox" id="uppercase" checked class="checkbox">
+        </div>
+        
+        <div class="setting-group">
+          <label class="setting-label">Include Lowercase</label>
+          <input type="checkbox" id="lowercase" checked class="checkbox">
+        </div>
+        
+        <div class="setting-group">
+          <label class="setting-label">Include Numbers</label>
+          <input type="checkbox" id="numbers" checked class="checkbox">
+        </div>
+        
+        <div class="setting-group">
+          <label class="setting-label">Include Symbols</label>
+          <input type="checkbox" id="symbols" checked class="checkbox">
+        </div>
+      </div>
+      
+      <button onclick="generatePassword()" class="btn-primary generate-btn">
+        <i class="fas fa-bolt"></i> Generate Password
+      </button>
+      
+      <div class="password-result">
+        <input type="text" id="passwordOutput" readonly class="password-output">
+        <button onclick="copyPassword()" class="btn-secondary copy-btn">
+          <i class="fas fa-copy"></i>
+        </button>
+      </div>
+      
+      <div class="password-strength">
+        <div class="strength-bar">
+          <div id="strengthFill" class="strength-fill"></div>
+        </div>
+        <span id="strengthText" class="strength-text">Strength: Medium</span>
+      </div>
+    </div>
+    
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const passSection = document.getElementById('passwordgenerator');
+  passSection.innerHTML = passwordHTML;
+  passSection.style.display = 'block';
+  
+  // Update slider value
+  document.getElementById('lengthSlider').addEventListener('input', function() {
+    document.getElementById('lengthValue').textContent = this.value;
+  });
+}
+
+function generatePassword() {
+  const length = parseInt(document.getElementById('lengthSlider').value);
+  const uppercase = document.getElementById('uppercase').checked;
+  const lowercase = document.getElementById('lowercase').checked;
+  const numbers = document.getElementById('numbers').checked;
+  const symbols = document.getElementById('symbols').checked;
+  
+  const chars = {
+    uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    lowercase: 'abcdefghijklmnopqrstuvwxyz',
+    numbers: '0123456789',
+    symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+  };
+  
+  let charPool = '';
+  if (uppercase) charPool += chars.uppercase;
+  if (lowercase) charPool += chars.lowercase;
+  if (numbers) charPool += chars.numbers;
+  if (symbols) charPool += chars.symbols;
+  
+  if (!charPool) {
+    showNotification('<i class="fas fa-exclamation-triangle"></i> Select at least one character type');
+    return;
+  }
+  
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charPool.charAt(Math.floor(Math.random() * charPool.length));
+  }
+  
+  document.getElementById('passwordOutput').value = password;
+  updatePasswordStrength(password);
+}
+
+function copyPassword() {
+  const password = document.getElementById('passwordOutput').value;
+  if (!password) {
+    showNotification('<i class="fas fa-exclamation-triangle"></i> No password to copy');
+    return;
+  }
+  
+  navigator.clipboard.writeText(password).then(() => {
+    showNotification('<i class="fas fa-check"></i> Password copied!');
+  });
+}
+
+function updatePasswordStrength(password) {
+  let strength = 0;
+  
+  if (password.length >= 12) strength += 25;
+  if (password.match(/[a-z]/)) strength += 25;
+  if (password.match(/[A-Z]/)) strength += 25;
+  if (password.match(/[0-9]/)) strength += 15;
+  if (password.match(/[^a-zA-Z0-9]/)) strength += 10;
+  
+  const strengthFill = document.getElementById('strengthFill');
+  const strengthText = document.getElementById('strengthText');
+  
+  strengthFill.style.width = strength + '%';
+  
+  if (strength >= 80) {
+    strengthFill.style.background = '#4ecdc4';
+    strengthText.textContent = 'Strength: Strong';
+  } else if (strength >= 60) {
+    strengthFill.style.background = '#ffd93d';
+    strengthText.textContent = 'Strength: Good';
+  } else if (strength >= 40) {
+    strengthFill.style.background = '#ff9f43';
+    strengthText.textContent = 'Strength: Medium';
+  } else {
+    strengthFill.style.background = '#ff6b6b';
+    strengthText.textContent = 'Strength: Weak';
+  }
+}
+
+// ===== 🔐 TEXT ENCRYPTION =====
+function showTextEncryption() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const encryptionHTML = `
+    <div class="section-title">
+      <i class="fas fa-lock"></i>
+      Text Encryption
+    </div>
+    
+    <div class="tool-container">
+      <div class="encryption-tabs">
+        <button class="tab-btn active" onclick="switchEncryptionTab('base64')">Base64</button>
+        <button class="tab-btn" onclick="switchEncryptionTab('caesar')">Caesar Cipher</button>
+      </div>
+      
+      <div id="base64Tab" class="tab-content active">
+        <textarea id="base64Input" placeholder="Enter text to encode/decode..." class="text-area"></textarea>
+        <div class="encryption-buttons">
+          <button onclick="base64Encode()" class="btn-primary">
+            <i class="fas fa-lock"></i> Encode
+          </button>
+          <button onclick="base64Decode()" class="btn-secondary">
+            <i class="fas fa-unlock"></i> Decode
+          </button>
+        </div>
+        <textarea id="base64Output" readonly placeholder="Result will appear here..." class="text-area output"></textarea>
+      </div>
+      
+      <div id="caesarTab" class="tab-content">
+        <div class="caesar-controls">
+          <label class="setting-label">Shift Amount</label>
+          <input type="number" id="caesarShift" min="1" max="25" value="3" class="number-input">
+        </div>
+        <textarea id="caesarInput" placeholder="Enter text to encrypt/decrypt..." class="text-area"></textarea>
+        <div class="encryption-buttons">
+          <button onclick="caesarEncrypt()" class="btn-primary">
+            <i class="fas fa-lock"></i> Encrypt
+          </button>
+          <button onclick="caesarDecrypt()" class="btn-secondary">
+            <i class="fas fa-unlock"></i> Decrypt
+          </button>
+        </div>
+        <textarea id="caesarOutput" readonly placeholder="Result will appear here..." class="text-area output"></textarea>
+      </div>
+      
+      <button onclick="copyEncryptionResult()" class="btn-secondary">
+        <i class="fas fa-copy"></i> Copy Result
+      </button>
+    </div>
+    
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const encryptSection = document.getElementById('textencryption');
+  encryptSection.innerHTML = encryptionHTML;
+  encryptSection.style.display = 'block';
+}
+
+function switchEncryptionTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById(tabName + 'Tab').classList.add('active');
+}
+
+function base64Encode() {
+  const input = document.getElementById('base64Input').value;
+  const encoded = btoa(unescape(encodeURIComponent(input)));
+  document.getElementById('base64Output').value = encoded;
+}
+
+function base64Decode() {
+  const input = document.getElementById('base64Input').value;
+  try {
+    const decoded = decodeURIComponent(escape(atob(input)));
+    document.getElementById('base64Output').value = decoded;
+  } catch (error) {
+    document.getElementById('base64Output').value = 'Error: Invalid Base64 input';
+  }
+}
+
+function caesarEncrypt() {
+  const input = document.getElementById('caesarInput').value;
+  const shift = parseInt(document.getElementById('caesarShift').value);
+  let result = '';
+  
+  for (let i = 0; i < input.length; i++) {
+    let char = input[i];
+    if (char.match(/[a-z]/i)) {
+      const code = input.charCodeAt(i);
+      if (code >= 65 && code <= 90) {
+        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+      } else if (code >= 97 && code <= 122) {
+        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+      }
+    }
+    result += char;
+  }
+  
+  document.getElementById('caesarOutput').value = result;
+}
+
+function caesarDecrypt() {
+  const input = document.getElementById('caesarInput').value;
+  const shift = parseInt(document.getElementById('caesarShift').value);
+  let result = '';
+  
+  for (let i = 0; i < input.length; i++) {
+    let char = input[i];
+    if (char.match(/[a-z]/i)) {
+      const code = input.charCodeAt(i);
+      if (code >= 65 && code <= 90) {
+        char = String.fromCharCode(((code - 65 - shift + 26) % 26) + 65);
+      } else if (code >= 97 && code <= 122) {
+        char = String.fromCharCode(((code - 97 - shift + 26) % 26) + 97);
+      }
+    }
+    result += char;
+  }
+  
+  document.getElementById('caesarOutput').value = result;
+}
+
+function copyEncryptionResult() {
+  const activeTab = document.querySelector('.tab-content.active');
+  const output = activeTab.querySelector('.output').value;
+  
+  if (!output) {
+    showNotification('<i class="fas fa-exclamation-triangle"></i> No result to copy');
+    return;
+  }
+  
+  navigator.clipboard.writeText(output).then(() => {
+    showNotification('<i class="fas fa-check"></i> Result copied!');
+  });
+}
+
 // ===== KALKULATOR =====
 function showCalculator() {
   document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');

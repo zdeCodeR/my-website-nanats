@@ -707,12 +707,18 @@ function switchTicTacToeMode() {
   resetTicTacToe();
 }
 
-// Konfigurasi Bot Telegram (ganti dengan token dan ID Anda)
+// ===== 📱 TELEGRAM REQUEST FEATURE =====
 const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
 const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
+const MAX_REQUESTS = 3; // Maksimal 3 request
+const TIME_WINDOW = 12 * 60 * 60 * 1000; // 12 jam dalam milidetik
 
 function showRequestFeature() {
   document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const requestCount = getRequestCount();
+  const remainingRequests = MAX_REQUESTS - requestCount.count;
+  const timeLeft = getTimeLeft(requestCount.lastRequest);
   
   const requestHTML = `
     <div class="section-title">
@@ -721,17 +727,56 @@ function showRequestFeature() {
     </div>
 
     <div class="tool-container">
+      <div class="request-info" style="
+        background: ${remainingRequests > 0 ? 'rgba(78, 205, 196, 0.1)' : 'rgba(255, 107, 107, 0.1)'};
+        border: 1px solid ${remainingRequests > 0 ? 'rgba(78, 205, 196, 0.3)' : 'rgba(255, 107, 107, 0.3)'};
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        text-align: center;
+      ">
+        <div style="font-size: 2rem; font-weight: bold; color: ${remainingRequests > 0 ? '#4ecdc4' : '#ff6b6b'}">
+          ${remainingRequests} / ${MAX_REQUESTS}
+        </div>
+        <div style="color: var(--text-secondary); font-size: 0.9rem;">
+          Requests remaining (resets in ${timeLeft})
+        </div>
+        ${remainingRequests === 0 ? `
+          <div style="color: #ff6b6b; margin-top: 0.5rem; font-weight: 600;">
+            <i class="fas fa-clock"></i> Limit reached. Try again later.
+          </div>
+        ` : ''}
+      </div>
+      
       <div class="nik-input-section">
         <label for="requestInput" class="nik-label">Your Request Message</label>
-        <textarea id="requestInput" placeholder="Describe your feature request or bug report..." class="text-area" rows="4"></textarea>
+        <textarea 
+          id="requestInput" 
+          placeholder="Describe your feature request or bug report..." 
+          class="text-area" 
+          rows="4"
+          ${remainingRequests === 0 ? 'disabled' : ''}
+        ></textarea>
         
         <div class="setting-group">
           <label class="setting-label">Your Name (optional)</label>
-          <input type="text" id="requesterName" placeholder="Enter your name" class="nik-input">
+          <input 
+            type="text" 
+            id="requesterName" 
+            placeholder="Enter your name" 
+            class="nik-input"
+            ${remainingRequests === 0 ? 'disabled' : ''}
+          >
         </div>
         
-        <button onclick="sendTelegramRequest()" class="btn-primary nik-button">
-          <i class="fas fa-paper-plane"></i> Send Request
+        <button 
+          onclick="sendTelegramRequest()" 
+          class="btn-primary nik-button"
+          ${remainingRequests === 0 ? 'disabled' : ''}
+          style="${remainingRequests === 0 ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+        >
+          <i class="fas fa-paper-plane"></i> 
+          ${remainingRequests === 0 ? 'Limit Reached' : 'Send Request'}
         </button>
       </div>
       
@@ -748,11 +793,55 @@ function showRequestFeature() {
   requestSection.style.display = 'block';
 }
 
+// Fungsi untuk mendapatkan jumlah request
+function getRequestCount() {
+  const now = Date.now();
+  const requests = JSON.parse(localStorage.getItem('telegram_requests') || '{"count": 0, "lastRequest": 0}');
+  
+  // Reset jika sudah lewat 12 jam
+  if (now - requests.lastRequest > TIME_WINDOW) {
+    return { count: 0, lastRequest: now };
+  }
+  
+  return requests;
+}
+
+// Fungsi untuk update jumlah request
+function updateRequestCount() {
+  const requests = getRequestCount();
+  requests.count += 1;
+  requests.lastRequest = Date.now();
+  localStorage.setItem('telegram_requests', JSON.stringify(requests));
+  return requests;
+}
+
+// Fungsi untuk menghitung sisa waktu
+function getTimeLeft(lastRequest) {
+  const now = Date.now();
+  const timePassed = now - lastRequest;
+  const timeLeft = TIME_WINDOW - timePassed;
+  
+  if (timeLeft <= 0) return '0 hours';
+  
+  const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+  const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+  
+  return `${hours}h ${minutes}m`;
+}
+
 async function sendTelegramRequest() {
   const message = document.getElementById('requestInput').value;
   const name = document.getElementById('requesterName').value || 'Anonymous';
   const resultDiv = document.getElementById('requestResult');
   
+  // Cek limit
+  const requestCount = getRequestCount();
+  if (requestCount.count >= MAX_REQUESTS) {
+    resultDiv.innerHTML = '<div class="nik-error">❌ Request limit reached (3 per 12 hours). Please try again later.</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+
   if (!message) {
     resultDiv.innerHTML = '<div class="nik-error">Please enter your request message</div>';
     resultDiv.style.display = 'block';
@@ -765,15 +854,19 @@ async function sendTelegramRequest() {
     return;
   }
   
+  // Update request count
+  updateRequestCount();
+  
   const requestData = {
     name: name,
     message: message,
     timestamp: new Date().toLocaleString(),
-    userAgent: navigator.userAgent
+    userAgent: navigator.userAgent,
+    requestNumber: requestCount.count + 1
   };
   
   const telegramMessage = `
-🆕 *New Feature Request*
+🆕 *New Feature Request* (#${requestData.requestNumber}/3)
 
 👤 *From:* ${requestData.name}
 ⏰ *Time:* ${requestData.timestamp}
@@ -781,6 +874,8 @@ async function sendTelegramRequest() {
 
 💬 *Message:*
 ${requestData.message}
+
+⏳ *Requests used:* ${requestCount.count + 1}/3 (Resets in 12 hours)
   `;
   
   try {
@@ -799,9 +894,19 @@ ${requestData.message}
     const result = await response.json();
     
     if (result.ok) {
-      resultDiv.innerHTML = '<div class="nik-success">✅ Request sent successfully! Thank you for your feedback.</div>';
+      resultDiv.innerHTML = `
+        <div class="nik-success">
+          ✅ Request sent successfully! 
+          <br><small>Requests remaining: ${MAX_REQUESTS - (requestCount.count + 1)}/3</small>
+        </div>
+      `;
       document.getElementById('requestInput').value = '';
       document.getElementById('requesterName').value = '';
+      
+      // Refresh tampilan untuk update limit
+      setTimeout(() => {
+        showRequestFeature();
+      }, 2000);
     } else {
       resultDiv.innerHTML = '<div class="nik-error">❌ Failed to send request. Please try again later.</div>';
     }
@@ -811,7 +916,6 @@ ${requestData.message}
   
   resultDiv.style.display = 'block';
   
-  // Sembunyikan result setelah 5 detik
   setTimeout(() => {
     resultDiv.style.display = 'none';
   }, 5000);

@@ -848,7 +848,7 @@ async function sendTelegramRequest() {
     return;
   }
   
-  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
+  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === '8470962705:AAEM_nC-i9q4kdqFbGX3TR_jJwaSufqb2_g') {
     resultDiv.innerHTML = '<div class="nik-error">Telegram bot not configured</div>';
     resultDiv.style.display = 'block';
     return;

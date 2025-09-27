@@ -367,6 +367,174 @@ function updatePasswordStrength(password) {
   }
 }
 
+// ===== 🔐 ADMIN PANEL =====
+const ADMIN_PASSWORD = "admin123"; // Ganti dengan password kuat
+
+function showAdminPanel() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  // Cek apakah sudah login
+  const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+  
+  if (isLoggedIn) {
+    showAdminDashboard();
+  } else {
+    showAdminLoginForm();
+  }
+}
+
+function showAdminLoginForm() {
+  const adminHTML = `
+    <div class="section-title">
+      <i class="fas fa-user-shield"></i>
+      Admin Login
+    </div>
+
+    <div class="tool-container">
+      <div class="admin-login-form">
+        <div class="setting-group">
+          <label class="setting-label">Admin Password</label>
+          <input type="password" id="adminPassword" placeholder="Enter admin password" class="password-input">
+        </div>
+        
+        <button onclick="attemptAdminLogin()" class="btn-primary nik-button">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        
+        <div id="adminLoginResult" class="nik-result" style="margin-top: 1rem; display: none;"></div>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const adminSection = document.getElementById('admin');
+  adminSection.innerHTML = adminHTML;
+  adminSection.style.display = 'block';
+}
+
+function attemptAdminLogin() {
+  const password = document.getElementById('adminPassword').value;
+  const resultDiv = document.getElementById('adminLoginResult');
+  
+  if (!password) {
+    resultDiv.innerHTML = '<div class="nik-error">Please enter password</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+  
+  if (password === ADMIN_PASSWORD) {
+    localStorage.setItem('adminLoggedIn', 'true');
+    showAdminDashboard();
+  } else {
+    resultDiv.innerHTML = '<div class="nik-error">❌ Invalid password</div>';
+    resultDiv.style.display = 'block';
+  }
+}
+
+function showAdminDashboard() {
+  // Hitung statistics
+  const requests = JSON.parse(localStorage.getItem('telegram_requests') || '{"count": 0}');
+  const totalRequests = requests.count;
+  
+  const adminHTML = `
+    <div class="section-title">
+      <i class="fas fa-cog"></i>
+      Admin Dashboard
+    </div>
+
+    <div class="tool-container">
+      <div class="admin-stats">
+        <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-number">${totalRequests}</span>
+            <span class="stat-label">Total Requests</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">${getActiveUsers()}</span>
+            <span class="stat-label">Active Users</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <button class="admin-btn" onclick="resetAllLimits()">
+          <i class="fas fa-refresh"></i>
+          <div>
+            <strong>Reset All Limits</strong>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Reset request limits for all users</div>
+          </div>
+        </button>
+        
+        <button class="admin-btn" onclick="clearAllData()">
+          <i class="fas fa-trash"></i>
+          <div>
+            <strong>Clear All Data</strong>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Clear all stored data</div>
+          </div>
+        </button>
+        
+        <button class="admin-btn btn-danger" onclick="adminLogout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <div>
+            <strong>Logout</strong>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Sign out from admin panel</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const adminSection = document.getElementById('admin');
+  adminSection.innerHTML = adminHTML;
+  adminSection.style.display = 'block';
+}
+
+function getActiveUsers() {
+  // Simple active users count (based on localStorage data)
+  let count = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.includes('telegram_requests')) {
+      count++;
+    }
+  }
+  return count;
+}
+
+function resetAllLimits() {
+  // Clear all request limits
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.includes('telegram_requests')) {
+      localStorage.removeItem(key);
+    }
+  }
+  showNotification('✅ All limits reset successfully!');
+  showAdminDashboard(); // Refresh view
+}
+
+function clearAllData() {
+  if (confirm('Are you sure you want to clear ALL data? This cannot be undone!')) {
+    localStorage.clear();
+    showNotification('✅ All data cleared successfully!');
+    showAdminDashboard();
+  }
+}
+
+function adminLogout() {
+  localStorage.removeItem('adminLoggedIn');
+  showNotification('✅ Logged out successfully!');
+  showAdminLoginForm();
+}
+
 // ===== 🔐 TEXT ENCRYPTION =====
 function showTextEncryption() {
   document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');

@@ -709,7 +709,7 @@ function switchTicTacToeMode() {
 
 // ===== 📱 TELEGRAM REQUEST FEATURE =====
 const TELEGRAM_BOT_TOKEN = '8470962705:AAEM_nC-i9q4kdqFbGX3TR_jJwaSufqb2_g';
-const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
+const TELEGRAM_CHAT_ID = '7710986992';
 const MAX_REQUESTS = 3; // Maksimal 3 request
 const TIME_WINDOW = 12 * 60 * 60 * 1000; // 12 jam dalam milidetik
 

@@ -707,6 +707,116 @@ function switchTicTacToeMode() {
   resetTicTacToe();
 }
 
+// Konfigurasi Bot Telegram (ganti dengan token dan ID Anda)
+const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
+
+function showRequestFeature() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const requestHTML = `
+    <div class="section-title">
+      <i class="fas fa-paper-plane"></i>
+      Request Feature
+    </div>
+
+    <div class="tool-container">
+      <div class="nik-input-section">
+        <label for="requestInput" class="nik-label">Your Request Message</label>
+        <textarea id="requestInput" placeholder="Describe your feature request or bug report..." class="text-area" rows="4"></textarea>
+        
+        <div class="setting-group">
+          <label class="setting-label">Your Name (optional)</label>
+          <input type="text" id="requesterName" placeholder="Enter your name" class="nik-input">
+        </div>
+        
+        <button onclick="sendTelegramRequest()" class="btn-primary nik-button">
+          <i class="fas fa-paper-plane"></i> Send Request
+        </button>
+      </div>
+      
+      <div id="requestResult" class="nik-result" style="margin-top: 1rem; display: none;"></div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const requestSection = document.getElementById('request');
+  requestSection.innerHTML = requestHTML;
+  requestSection.style.display = 'block';
+}
+
+async function sendTelegramRequest() {
+  const message = document.getElementById('requestInput').value;
+  const name = document.getElementById('requesterName').value || 'Anonymous';
+  const resultDiv = document.getElementById('requestResult');
+  
+  if (!message) {
+    resultDiv.innerHTML = '<div class="nik-error">Please enter your request message</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+  
+  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
+    resultDiv.innerHTML = '<div class="nik-error">Telegram bot not configured</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+  
+  const requestData = {
+    name: name,
+    message: message,
+    timestamp: new Date().toLocaleString(),
+    userAgent: navigator.userAgent
+  };
+  
+  const telegramMessage = `
+🆕 *New Feature Request*
+
+👤 *From:* ${requestData.name}
+⏰ *Time:* ${requestData.timestamp}
+📱 *Browser:* ${requestData.userAgent}
+
+💬 *Message:*
+${requestData.message}
+  `;
+  
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: telegramMessage,
+        parse_mode: 'Markdown'
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.ok) {
+      resultDiv.innerHTML = '<div class="nik-success">✅ Request sent successfully! Thank you for your feedback.</div>';
+      document.getElementById('requestInput').value = '';
+      document.getElementById('requesterName').value = '';
+    } else {
+      resultDiv.innerHTML = '<div class="nik-error">❌ Failed to send request. Please try again later.</div>';
+    }
+  } catch (error) {
+    resultDiv.innerHTML = '<div class="nik-error">❌ Network error. Please check your connection.</div>';
+  }
+  
+  resultDiv.style.display = 'block';
+  
+  // Sembunyikan result setelah 5 detik
+  setTimeout(() => {
+    resultDiv.style.display = 'none';
+  }, 5000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {

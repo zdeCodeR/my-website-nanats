@@ -368,7 +368,7 @@ function updatePasswordStrength(password) {
 }
 
 // ===== 🔐 ADMIN PANEL =====
-const ADMIN_PASSWORD = "admin123"; // Ganti dengan password kuat
+/*const ADMIN_PASSWORD = "admin123"; // Ganti dengan password kuat
 
 function showAdminPanel() {
   document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
@@ -533,7 +533,7 @@ function adminLogout() {
   localStorage.removeItem('adminLoggedIn');
   showNotification('✅ Logged out successfully!');
   showAdminLoginForm();
-}
+}*/
 
 // ===== 🔐 TEXT ENCRYPTION =====
 function showTextEncryption() {
@@ -876,7 +876,7 @@ function switchTicTacToeMode() {
 }
 
 // ===== 📱 TELEGRAM REQUEST FEATURE =====
-const TELEGRAM_BOT_TOKEN = '8470962705:AAEM_nC-i9q4kdqFbGX3TR_jJwaSufqb2_g';
+/*const TELEGRAM_BOT_TOKEN = '8470962705:AAEM_nC-i9q4kdqFbGX3TR_jJwaSufqb2_g';
 const TELEGRAM_CHAT_ID = '7710986992';
 const MAX_REQUESTS = 3; // Maksimal 3 request
 const TIME_WINDOW = 12 * 60 * 60 * 1000; // 12 jam dalam milidetik
@@ -1087,7 +1087,385 @@ ${requestData.message}
   setTimeout(() => {
     resultDiv.style.display = 'none';
   }, 5000);
+}*/
+// ===== 📱 TELEGRAM REQUEST FEATURE =====
+const TELEGRAM_BOT_TOKEN = '8470962705:AAEM_nC-i9q4kdqFbGX3TR_jJwaSufqb2_g';
+const TELEGRAM_CHAT_ID = '7710986992';
+const MAX_REQUESTS = 3;
+const TIME_WINDOW = 12 * 60 * 60 * 1000;
+
+// Fungsi untuk mendapatkan jumlah request
+function getRequestCount() {
+  const now = Date.now();
+  const requests = JSON.parse(localStorage.getItem('telegram_requests') || '{"count": 0, "lastRequest": 0}');
+  
+  if (now - requests.lastRequest > TIME_WINDOW) {
+    return { count: 0, lastRequest: now };
+  }
+  
+  return requests;
 }
+
+// Fungsi untuk update jumlah request
+function updateRequestCount() {
+  const requests = getRequestCount();
+  requests.count += 1;
+  requests.lastRequest = Date.now();
+  localStorage.setItem('telegram_requests', JSON.stringify(requests));
+  return requests;
+}
+
+// Fungsi untuk menghitung sisa waktu
+function getTimeLeft(lastRequest) {
+  const now = Date.now();
+  const timePassed = now - lastRequest;
+  const timeLeft = TIME_WINDOW - timePassed;
+  
+  if (timeLeft <= 0) return '0 hours';
+  
+  const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+  const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+  
+  return `${hours}h ${minutes}m`;
+}
+
+// Fungsi utama show request feature
+function showRequestFeature() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const requestCount = getRequestCount();
+  const remainingRequests = MAX_REQUESTS - requestCount.count;
+  const timeLeft = getTimeLeft(requestCount.lastRequest);
+
+  const requestHTML = `
+    <div class="section-title">
+      <i class="fas fa-paper-plane"></i>
+      Request Feature
+    </div>
+
+    <div class="tool-container">
+      <div class="request-info" style="
+        background: ${remainingRequests > 0 ? 'rgba(78, 205, 196, 0.1)' : 'rgba(255, 107, 107, 0.1)'};
+        border: 1px solid ${remainingRequests > 0 ? 'rgba(78, 205, 196, 0.3)' : 'rgba(255, 107, 107, 0.3)'};
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        text-align: center;
+      ">
+        <div style="font-size: 2rem; font-weight: bold; color: ${remainingRequests > 0 ? '#4ecdc4' : '#ff6b6b'}">
+          ${remainingRequests} / ${MAX_REQUESTS}
+        </div>
+        <div style="color: var(--text-secondary); font-size: 0.9rem;">
+          Requests remaining (resets in ${timeLeft})
+        </div>
+        ${remainingRequests === 0 ? `
+          <div style="color: #ff6b6b; margin-top: 0.5rem; font-weight: 600;">
+            <i class="fas fa-clock"></i> Limit reached. Try again later.
+          </div>
+        ` : ''}
+      </div>
+      
+      <div class="nik-input-section">
+        <label for="requestInput" class="nik-label">Your Request Message</label>
+        <textarea 
+          id="requestInput" 
+          placeholder="Describe your feature request or bug report..." 
+          class="text-area" 
+          rows="4"
+          ${remainingRequests === 0 ? 'disabled' : ''}
+        ></textarea>
+        
+        <div class="setting-group">
+          <label class="setting-label">Your Name (optional)</label>
+          <input 
+            type="text" 
+            id="requesterName" 
+            placeholder="Enter your name" 
+            class="nik-input"
+            ${remainingRequests === 0 ? 'disabled' : ''}
+          >
+        </div>
+        
+        <button 
+          onclick="sendTelegramRequest()" 
+          class="btn-primary nik-button"
+          ${remainingRequests === 0 ? 'disabled' : ''}
+          style="${remainingRequests === 0 ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+        >
+          <i class="fas fa-paper-plane"></i> 
+          ${remainingRequests === 0 ? 'Limit Reached' : 'Send Request'}
+        </button>
+      </div>
+      
+      <div id="requestResult" class="nik-result" style="margin-top: 1rem; display: none;"></div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const requestSection = document.getElementById('request');
+  requestSection.innerHTML = requestHTML;
+  requestSection.style.display = 'block';
+}
+
+// Fungsi kirim request ke Telegram
+async function sendTelegramRequest() {
+  const message = document.getElementById('requestInput').value;
+  const name = document.getElementById('requesterName').value || 'Anonymous';
+  const resultDiv = document.getElementById('requestResult');
+  
+  // Cek limit
+  const requestCount = getRequestCount();
+  if (requestCount.count >= MAX_REQUESTS) {
+    resultDiv.innerHTML = '<div class="nik-error">❌ Request limit reached (3 per 12 hours). Please try again later.</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+
+  if (!message) {
+    resultDiv.innerHTML = '<div class="nik-error">Please enter your request message</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+  
+  // Update request count
+  updateRequestCount();
+  
+  const requestData = {
+    name: name,
+    message: message,
+    timestamp: new Date().toLocaleString(),
+    userAgent: navigator.userAgent,
+    requestNumber: requestCount.count + 1
+  };
+  
+  const telegramMessage = `
+🆕 *New Feature Request* (#${requestData.requestNumber}/3)
+
+👤 *From:* ${requestData.name}
+⏰ *Time:* ${requestData.timestamp}
+📱 *Browser:* ${requestData.userAgent}
+
+💬 *Message:*
+${requestData.message}
+
+⏳ *Requests used:* ${requestCount.count + 1}/3 (Resets in 12 hours)
+  `;
+  
+  try {
+    console.log("📨 Sending to Telegram...");
+    
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: telegramMessage,
+        parse_mode: 'Markdown'
+      })
+    });
+    
+    const result = await response.json();
+    console.log("📡 Telegram response:", result);
+    
+    if (result.ok) {
+      resultDiv.innerHTML = `
+        <div class="nik-success">
+          ✅ Request sent successfully! 
+          <br><small>Requests remaining: ${MAX_REQUESTS - (requestCount.count + 1)}/3</small>
+        </div>
+      `;
+      document.getElementById('requestInput').value = '';
+      document.getElementById('requesterName').value = '';
+      
+      // Refresh tampilan untuk update limit
+      setTimeout(() => {
+        showRequestFeature();
+      }, 2000);
+    } else {
+      resultDiv.innerHTML = `<div class="nik-error">❌ Telegram error: ${result.description || 'Unknown error'}</div>`;
+    }
+  } catch (error) {
+    console.error("🌐 Network error:", error);
+    resultDiv.innerHTML = '<div class="nik-error">❌ Network error. Please check your connection.</div>';
+  }
+  
+  resultDiv.style.display = 'block';
+  
+  setTimeout(() => {
+    resultDiv.style.display = 'none';
+  }, 5000);
+}
+
+// ===== 🔐 ADMIN PANEL =====
+const ADMIN_PASSWORD = "admin123";
+
+function showAdminPanel() {
+  document.querySelectorAll('.main-content').forEach(el => el.style.display = 'none');
+  
+  const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+  
+  if (isLoggedIn) {
+    showAdminDashboard();
+  } else {
+    showAdminLoginForm();
+  }
+}
+
+function showAdminLoginForm() {
+  const adminHTML = `
+    <div class="section-title">
+      <i class="fas fa-user-shield"></i>
+      Admin Login
+    </div>
+
+    <div class="tool-container">
+      <div class="admin-login-form">
+        <div class="setting-group">
+          <label class="setting-label">Admin Password</label>
+          <input type="password" id="adminPassword" placeholder="Enter admin password" class="password-input">
+        </div>
+        
+        <button onclick="attemptAdminLogin()" class="btn-primary nik-button">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        
+        <div id="adminLoginResult" class="nik-result" style="margin-top: 1rem; display: none;"></div>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const adminSection = document.getElementById('admin');
+  adminSection.innerHTML = adminHTML;
+  adminSection.style.display = 'block';
+}
+
+function attemptAdminLogin() {
+  const password = document.getElementById('adminPassword').value;
+  const resultDiv = document.getElementById('adminLoginResult');
+  
+  if (!password) {
+    resultDiv.innerHTML = '<div class="nik-error">Please enter password</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+  
+  if (password === ADMIN_PASSWORD) {
+    localStorage.setItem('adminLoggedIn', 'true');
+    showAdminDashboard();
+  } else {
+    resultDiv.innerHTML = '<div class="nik-error">❌ Invalid password</div>';
+    resultDiv.style.display = 'block';
+  }
+}
+
+function showAdminDashboard() {
+  const requests = JSON.parse(localStorage.getItem('telegram_requests') || '{"count": 0}');
+  const totalRequests = requests.count;
+  
+  const adminHTML = `
+    <div class="section-title">
+      <i class="fas fa-cog"></i>
+      Admin Dashboard
+    </div>
+
+    <div class="tool-container">
+      <div class="admin-stats">
+        <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-number">${totalRequests}</span>
+            <span class="stat-label">Total Requests</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">${getActiveUsers()}</span>
+            <span class="stat-label">Active Users</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <button class="admin-btn" onclick="resetAllLimits()">
+          <i class="fas fa-refresh"></i>
+          <div>
+            <strong>Reset All Limits</strong>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Reset request limits for all users</div>
+          </div>
+        </button>
+        
+        <button class="admin-btn" onclick="clearAllData()">
+          <i class="fas fa-trash"></i>
+          <div>
+            <strong>Clear All Data</strong>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Clear all stored data</div>
+          </div>
+        </button>
+        
+        <button class="admin-btn btn-danger" onclick="adminLogout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <div>
+            <strong>Logout</strong>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Sign out from admin panel</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="backToMain()">
+      <i class="fas fa-arrow-left"></i> Back to Main
+    </button>
+  `;
+  
+  const adminSection = document.getElementById('admin');
+  adminSection.innerHTML = adminHTML;
+  adminSection.style.display = 'block';
+}
+
+function getActiveUsers() {
+  let count = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.includes('telegram_requests')) {
+      count++;
+    }
+  }
+  return count;
+}
+
+function resetAllLimits() {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.includes('telegram_requests')) {
+      localStorage.removeItem(key);
+    }
+  }
+  showNotification('✅ All limits reset successfully!');
+  showAdminDashboard();
+}
+
+function clearAllData() {
+  if (confirm('Are you sure you want to clear ALL data? This cannot be undone!')) {
+    localStorage.clear();
+    showNotification('✅ All data cleared successfully!');
+    showAdminDashboard();
+  }
+}
+
+function adminLogout() {
+  localStorage.removeItem('adminLoggedIn');
+  showNotification('✅ Logged out successfully!');
+  showAdminLoginForm();
+}
+
+// ... (kode lainnya tetap di bawah)
 
 document.addEventListener('DOMContentLoaded', function() {
   const observer = new IntersectionObserver((entries) => {
